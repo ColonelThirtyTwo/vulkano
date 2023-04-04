@@ -115,7 +115,7 @@ mod impl_vertex;
 mod vertex;
 
 /// The state in a graphics pipeline describing how the vertex input stage should behave.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, PartialEq, Eq, Default)]
 pub struct VertexInputState {
     /// A description of the vertex buffers that the vertex input stage will read from.
     pub bindings: HashMap<u32, VertexInputBindingDescription>,
@@ -123,6 +123,16 @@ pub struct VertexInputState {
     /// Describes, for each shader input location, the mapping between elements in a vertex buffer
     /// and the components of that location in the shader.
     pub attributes: HashMap<u32, VertexInputAttributeDescription>,
+}
+impl std::hash::Hash for VertexInputState {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        for kv in self.bindings.iter() {
+            kv.hash(state);
+        }
+        for kv in self.attributes.iter() {
+            kv.hash(state);
+        }
+    }
 }
 
 impl VertexInputState {
@@ -173,7 +183,7 @@ impl VertexInputState {
 }
 
 /// Describes a single vertex buffer binding.
-#[derive(Clone, Debug)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct VertexInputBindingDescription {
     /// The number of bytes from the start of one element in the vertex buffer to the start of the
     /// next element. This can be simply the size of the data in each element, but larger strides
@@ -185,7 +195,7 @@ pub struct VertexInputBindingDescription {
 }
 
 /// Describes a single vertex buffer attribute mapping.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub struct VertexInputAttributeDescription {
     /// The vertex buffer binding number that this attribute should take its data from.
     pub binding: u32,
@@ -204,7 +214,7 @@ pub struct VertexInputAttributeDescription {
 }
 
 /// How the vertex source should be unrolled.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum VertexInputRate {
     /// Each element of the source corresponds to a vertex.
     Vertex,

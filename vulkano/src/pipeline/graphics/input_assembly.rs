@@ -16,7 +16,7 @@ use crate::{
 };
 
 /// The state in a graphics pipeline describing how the input assembly stage should behave.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct InputAssemblyState {
     /// The type of primitives.
     ///
